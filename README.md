@@ -1,3 +1,54 @@
+# LiteLLM Proxy Installation Guide
+
+This guide will help you set up LiteLLM as a proxy between Ollama and OpenWebUI.
+
+## Prerequisites
+
+- Docker installed and running
+- Ollama container running
+- OpenWebUI container running (optional, for UI integration)
+
+## Installation Steps
+
+1. **Clone or create the litellm-proxy directory**
+   ```bash
+   mkdir -p ~/litellm-proxy
+   cd ~/litellm-proxy
+Find your Ollama container's network
+
+docker ps | grep ollama
+docker inspect ollama-container-name | grep -A 10 "Networks"
+Start the LiteLLM proxy
+
+docker compose up -d
+Verify the installation
+
+# Check if it's running
+docker ps | grep litellm-proxy
+
+# Verify the models are available
+curl http://localhost:8000/v1/models \
+  -H "Authorization: Bearer sk-1234567890abcdef"
+Configure OpenWebUI (Optional)
+
+Update your OpenWebUI container to use the LiteLLM proxy:
+
+Change OLLAMA_BASE_URL to http://litellm-proxy:8000 (if on same network) or http://host.docker.internal:8000
+Add OPENAI_API_KEY=sk-1234567890abcdef
+Test the setup
+
+curl http://localhost:8000/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer sk-1234567890abcdef" \
+  -d '{
+    "model": "llama3.2:1b",
+    "messages": [{"role": "user", "content": "Hello, how are you?"}]
+  }'
+Customization Options
+API Key: Change sk-1234567890abcdef in both files to your preferred key
+Port: Change 8000:8000 in docker-compose.yml if you want to use a different port
+Models: Update the model names in config.yaml to match your available Ollama models 
+
 # LiteLLM Proxy API Examples
 
 This README contains sample curl commands for interacting with the LiteLLM proxy API. The proxy provides an OpenAI-compatible API for your Ollama models.
