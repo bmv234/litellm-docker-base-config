@@ -1,0 +1,13 @@
+model_list:
+  - model_name: llama3.2:1b
+    litellm_params:
+      model: ollama/llama3.2:1b
+      api_base: http://ollama:11434
+
+  - model_name: llama3.2:latest
+    litellm_params:
+      model: ollama/llama3.2:latest
+      api_base: http://ollama:11434
+
+general_settings:
+  pass_through_all_models: true
